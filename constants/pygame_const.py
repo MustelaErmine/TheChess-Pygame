@@ -1,11 +1,14 @@
 import os
 import pygame
+import sys
 
 width = 900
-height = 1000
+height = 900
 size = (width, height)
 
-cell_width = cell_height = 10
+black, white, blue, red = '#121212', '#F5F5F5', '#30475E', '#F05454'
+
+cell_size = 100
 
 fps = 30
 
