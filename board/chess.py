@@ -1,3 +1,9 @@
+from queen import *
+from king import *
+from knight import *
+from rook import *
+from pawn import *
+from bishop import *
 from board import *
 
 WHITE = 1
@@ -13,5 +19,3 @@ def opponent(color):
 
 def correct_coords(row, col):
     return 0 <= row < 8 and 0 <= col < 8
-
-
