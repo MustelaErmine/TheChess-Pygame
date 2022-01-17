@@ -1,13 +1,14 @@
 import sys
 import pygame
 
-sys.path.insert(0, 'board/')
-
 from chess import *
 from pygame_const import *
+from piece import * 
 
 
 font = None
+all_sprite = None
+pieces_group = None
 
 
 def terminate():
@@ -68,16 +69,24 @@ def draw_cells(screen):
 def update(screen):
 	pygame.draw.rect(screen, white, (0, 0, width, height))
 	draw_cells(screen)
+	all_sprite.draw(screen)
+	pygame.display.flip()
 
 
 def game(screen, clock):
-    update(screen)
-    pygame.display.flip()
+    global all_sprite, pieces_group
 
-    for _ in range(fps * 30):
+    pieces_group = pygame.sprite.Group()
+    all_sprite = pygame.sprite.Group()
+
+    p = Piece(Pawn(WHITE), pieces_group, all_sprite, 0, 0)
+
+    update(screen)
+    running = True
+    while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 terminate()
         clock.tick(fps)
 
-    pass
+    main_menu()

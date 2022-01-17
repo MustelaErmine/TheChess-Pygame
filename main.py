@@ -4,6 +4,7 @@ import os
 
 sys.path.insert(0, 'screenwork/')
 sys.path.insert(0, 'constants/')
+sys.path.insert(0, 'board/')
 
 from splash import *
 from game import *
