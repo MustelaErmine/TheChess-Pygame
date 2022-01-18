@@ -33,7 +33,6 @@ class Piece(pygame.sprite.Sprite):
 		for i in range(8):
 			for j in range(8):
 				if self.piece.can_move(self.board, self.y, self.x, i, j) and \
-				   (self.y, self.x) != (i, j) and \
 				   (self.board.get_piece(i, j) is None or
 				   	self.board.get_piece(i, j).color == opponent(self.piece.color)):
 					cells.add((i, j))

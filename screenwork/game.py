@@ -78,6 +78,7 @@ def draw_selected(screen):
 
 def update(screen):
     pygame.draw.rect(screen, white, (0, 0, width, height))
+    pieces_group.update(player)
     draw_cells(screen)
     draw_selected(screen)
     all_sprite.draw(screen)
@@ -104,7 +105,6 @@ def game(screen, clock):
             else:
                 pieces[-1].append(None)
 
-    pieces_group.update(player)
     update(screen)
     running = True
     while running:
@@ -116,13 +116,13 @@ def game(screen, clock):
                 if cell:
                     print(cell)
                     if selected:
+                        make_move(*selected, *cell, pieces, board)
                         selected = None
                         selected_cells = set()
-                        print('move')
                     else:
                         piece = pieces[cell[0]][cell[1]]
                         selected = cell
-                        if piece:
+                        if piece and piece.piece.color == player:
                             selected_cells = piece
                             selected_cells = piece.get_placing_cells()
                             print(selected_cells)
@@ -145,5 +145,17 @@ def get_clicked_cell(x, y):
         return False
 
 
-def make_move(row, col, row1, col1):
-    pass
+def make_move(row, col, row1, col1, pieces, board):
+    global player
+    col, row = convert_cell(col, row, player)
+    col1, row1 = convert_cell(col1, row1, player)
+    print('move', row, col, row1, col1)
+    move = board.move_piece(row, 7 - col, row1, 7 - col1)
+    print(move)
+    if move:
+        piece = pieces[row][col]
+        pieces[row1][col1] = piece
+        pieces[row][col] = None
+        player = opponent(player)
+        piece.update(col1, row1, player)
+        print_board(board)

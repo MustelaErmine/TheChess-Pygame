@@ -16,4 +16,18 @@ def correct_coords(row, col):
 def convert_cell(x, y, player):
     if player == WHITE:
         return x, 7 - y
-    return x, y
+    return 7 - x, y
+
+
+def print_board(board):
+    print('     +----+----+----+----+----+----+----+----+')
+    for row in range(7, -1, -1):
+        print(' ', row, end='  ')
+        for col in range(8):
+            print('|', board.cell(row, col), end=' ')
+        print('|')
+        print('     +----+----+----+----+----+----+----+----+')
+    print(end='        ')
+    for col in range(8):
+        print(col, end='    ')
+    print()
