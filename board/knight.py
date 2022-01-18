@@ -18,4 +18,4 @@ class Knight:
                 (abs(row1 - row) == 1 and abs(col1 - col) == 2))
 
     def can_attack(self, board, row, col, row1, col1):
-        return self.can_move(self, board, row, col, row1, col1)
+        return self.can_move(board, row, col, row1, col1)

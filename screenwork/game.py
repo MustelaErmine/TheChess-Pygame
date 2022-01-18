@@ -68,9 +68,8 @@ def draw_cells(screen):
 
 def draw_selected(screen):
     for cell in selected_cells:
-        cell = convert_cell(*cell, player)
         x = margin_left + cell[1] * cell_size
-        y = margin_top + cell[0] * cell_size
+        y = margin_top + (7 - cell[0]) * cell_size
         pygame.draw.rect(screen, blue, (x + padding // 2, y + padding // 2, 
                                         cell_size - padding, cell_size - padding), padding)
         #pygame.draw.rect(screen, blue, (x, y, cell_size, cell_size), padding)
@@ -82,7 +81,12 @@ def update(screen):
     draw_cells(screen)
     draw_selected(screen)
     all_sprite.draw(screen)
+    update_player_text(screen)
     pygame.display.flip()
+
+
+def update_player_text(screen):
+    pass
 
 
 def game(screen, clock):
@@ -106,6 +110,9 @@ def game(screen, clock):
                 pieces[-1].append(None)
 
     update(screen)
+
+    print_board(board)
+
     running = True
     while running:
         for event in pygame.event.get():
@@ -121,11 +128,14 @@ def game(screen, clock):
                         selected_cells = set()
                     else:
                         piece = pieces[cell[0]][cell[1]]
-                        selected = cell
                         if piece and piece.piece.color == player:
+                            selected = cell
                             selected_cells = piece
                             selected_cells = piece.get_placing_cells()
                             print(selected_cells)
+                        else:
+                            selected = None
+                            selected_cells = set()
                 else:
                     selected = None
                     selected_cells = set()
@@ -140,17 +150,16 @@ def get_clicked_cell(x, y):
     y -= margin_top
     if 0 <= y <= cell_size * 8 and 0 <= x <= cell_size * 8:
         i, j = y // cell_size, x // cell_size
-        return convert_cell(i, j, player)
+        return 7 - i, j
     else:
         return False
 
 
 def make_move(row, col, row1, col1, pieces, board):
     global player
-    col, row = convert_cell(col, row, player)
-    col1, row1 = convert_cell(col1, row1, player)
     print('move', row, col, row1, col1)
-    move = board.move_piece(row, 7 - col, row1, 7 - col1)
+    piece2 = pieces[row1][col1]
+    move = board.move_piece(row, col, row1, col1)
     print(move)
     if move:
         piece = pieces[row][col]
@@ -158,4 +167,6 @@ def make_move(row, col, row1, col1, pieces, board):
         pieces[row][col] = None
         player = opponent(player)
         piece.update(col1, row1, player)
+        if piece2 is not None:
+            piece2.kill()
         print_board(board)

@@ -12,7 +12,8 @@ fps = 30
 
 cell_size = 86
 margin_top = 10
-margin_left = (width - 8 * cell_size) // 2
+#margin_left = (width - 8 * cell_size) // 2
+margin_left = 10
 padding = 3
 
 
