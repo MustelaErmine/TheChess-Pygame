@@ -79,7 +79,17 @@ def game(screen, clock):
     pieces_group = pygame.sprite.Group()
     all_sprite = pygame.sprite.Group()
 
-    p = Piece(Pawn(WHITE), pieces_group, all_sprite, 0, 0)
+    board = Board()
+
+    pieces = []
+    for i in range(8):
+        pieces.append([])
+        for j in range(8):
+            if board.get_piece(i, j) is not None:
+                pieces[-1].append(Piece(pieces_group, all_sprite, 
+                                        board.get_piece(i, j), board, j, i))
+            else:
+            	pieces[-1].append(None)
 
     update(screen)
     running = True
@@ -87,6 +97,24 @@ def game(screen, clock):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 terminate()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+            	cell = get_clicked_cell(*event.pos)
+            	if cell:
+            		print(cell)
+            		print(board.get_piece(*cell))
         clock.tick(fps)
 
     main_menu()
+
+
+def get_clicked_cell(x, y):
+	x -= margin_left
+	y -= margin_top
+	if 0 <= y <= cell_size * 8 and 0 <= x <= cell_size * 8:
+		return y // cell_size, x // cell_size
+	else:
+		return False
+
+
+def make_move(row, col, row1, col1):
+	pass

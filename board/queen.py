@@ -31,3 +31,6 @@ class Queen:
                     caneat += 1
 
         return can2 == 0 or caneat == 1 and can2 == 1
+
+    def can_attack(self, board, row, col, row1, col1):
+        return self.can_move(self, board, row, col, row1, col1)

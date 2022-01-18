@@ -10,7 +10,7 @@ black, white, blue, red = '#121212', '#F5F5F5', '#30475E', '#F05454'
 
 fps = 30
 
-cell_size = 100
+cell_size = 86
 margin_top = 10
 margin_left = (width - 8 * cell_size) // 2
 padding = 3

@@ -10,7 +10,10 @@ class King:
         return 'K'
 
     def can_move(self, board, row, col, row1, col1):
-        return True
+        if row != row1 and col != col1:
+            return False
+
+        return (abs(row - row1) == 1) ^ (abs(col - col1) == 1)
 
     def can_attack(self, board, row, col, row1, col1):
         return self.can_move(self, board, row, col, row1, col1)
