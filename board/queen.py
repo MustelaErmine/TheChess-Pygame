@@ -1,3 +1,6 @@
+from chess_const import *
+
+
 class Queen:
     def __init__(self, color):
         self.color = color

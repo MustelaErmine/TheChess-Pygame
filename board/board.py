@@ -1,11 +1,4 @@
-from queen import *
-from king import *
-from knight import *
-from rook import *
-from pawn import *
-from bishop import *
 from chess_const import *
-
 
 class Board:
     def __init__(self):

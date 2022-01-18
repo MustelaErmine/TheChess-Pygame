@@ -10,6 +10,11 @@ font = None
 all_sprite = None
 pieces_group = None
 
+player = None
+
+selected = None
+selected_cells = set()
+
 
 def terminate():
     pygame.quit()
@@ -52,11 +57,6 @@ def main_menu(screen, clock):
 
 
 def draw_cells(screen):
-    margin_top = 10
-    margin_left = (width - 8 * cell_size) // 2
-
-    padding = 3
-
     for i in range(8):
         for j in range(8):
             x = margin_left + i * cell_size
@@ -66,18 +66,31 @@ def draw_cells(screen):
                                              cell_size - padding * 2))
 
 
+def draw_selected(screen):
+    for cell in selected_cells:
+        cell = convert_cell(*cell, player)
+        x = margin_left + cell[1] * cell_size
+        y = margin_top + cell[0] * cell_size
+        pygame.draw.rect(screen, blue, (x + padding // 2, y + padding // 2, 
+                                        cell_size - padding, cell_size - padding), padding)
+        #pygame.draw.rect(screen, blue, (x, y, cell_size, cell_size), padding)
+
+
 def update(screen):
-	pygame.draw.rect(screen, white, (0, 0, width, height))
-	draw_cells(screen)
-	all_sprite.draw(screen)
-	pygame.display.flip()
+    pygame.draw.rect(screen, white, (0, 0, width, height))
+    draw_cells(screen)
+    draw_selected(screen)
+    all_sprite.draw(screen)
+    pygame.display.flip()
 
 
 def game(screen, clock):
-    global all_sprite, pieces_group
+    global all_sprite, pieces_group, player, selected_cells, selected
 
     pieces_group = pygame.sprite.Group()
     all_sprite = pygame.sprite.Group()
+
+    player = WHITE
 
     board = Board()
 
@@ -89,8 +102,9 @@ def game(screen, clock):
                 pieces[-1].append(Piece(pieces_group, all_sprite, 
                                         board.get_piece(i, j), board, j, i))
             else:
-            	pieces[-1].append(None)
+                pieces[-1].append(None)
 
+    pieces_group.update(player)
     update(screen)
     running = True
     while running:
@@ -98,23 +112,38 @@ def game(screen, clock):
             if event.type == pygame.QUIT:
                 terminate()
             if event.type == pygame.MOUSEBUTTONDOWN:
-            	cell = get_clicked_cell(*event.pos)
-            	if cell:
-            		print(cell)
-            		print(board.get_piece(*cell))
+                cell = get_clicked_cell(*event.pos)
+                if cell:
+                    print(cell)
+                    if selected:
+                        selected = None
+                        selected_cells = set()
+                        print('move')
+                    else:
+                        piece = pieces[cell[0]][cell[1]]
+                        selected = cell
+                        if piece:
+                            selected_cells = piece
+                            selected_cells = piece.get_placing_cells()
+                            print(selected_cells)
+                else:
+                    selected = None
+                    selected_cells = set()
+                update(screen)
         clock.tick(fps)
 
     main_menu()
 
 
 def get_clicked_cell(x, y):
-	x -= margin_left
-	y -= margin_top
-	if 0 <= y <= cell_size * 8 and 0 <= x <= cell_size * 8:
-		return y // cell_size, x // cell_size
-	else:
-		return False
+    x -= margin_left
+    y -= margin_top
+    if 0 <= y <= cell_size * 8 and 0 <= x <= cell_size * 8:
+        i, j = y // cell_size, x // cell_size
+        return convert_cell(i, j, player)
+    else:
+        return False
 
 
 def make_move(row, col, row1, col1):
-	pass
+    pass
