@@ -68,8 +68,12 @@ def draw_cells(screen):
 
 def draw_selected(screen):
     for cell in selected_cells:
-        x = margin_left + cell[1] * cell_size
-        y = margin_top + (7 - cell[0]) * cell_size
+        if player == WHITE:
+            x = margin_left + cell[1] * cell_size
+            y = margin_top + (7 - cell[0]) * cell_size
+        else:
+            x = margin_left + (7 - cell[1]) * cell_size
+            y = margin_top + cell[0] * cell_size
         pygame.draw.rect(screen, blue, (x + padding // 2, y + padding // 2, 
                                         cell_size - padding, cell_size - padding), padding)
         #pygame.draw.rect(screen, blue, (x, y, cell_size, cell_size), padding)
@@ -150,7 +154,9 @@ def get_clicked_cell(x, y):
     y -= margin_top
     if 0 <= y <= cell_size * 8 and 0 <= x <= cell_size * 8:
         i, j = y // cell_size, x // cell_size
-        return 7 - i, j
+        if player == WHITE:
+            return 7 - i, j
+        return i, 7 - j
     else:
         return False
 

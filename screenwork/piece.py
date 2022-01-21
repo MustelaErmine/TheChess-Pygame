@@ -24,8 +24,12 @@ class Piece(pygame.sprite.Sprite):
         else:
             pos_x, pos_y, player = args
         self.x, self.y = pos_x, pos_y
-        self.rect.x = margin_left + pos_x * cell_size + padding
-        self.rect.y = margin_top + (7 - pos_y) * cell_size + padding
+        if player == WHITE:
+            self.rect.x = margin_left + pos_x * cell_size + padding
+            self.rect.y = margin_top + (7 - pos_y) * cell_size + padding
+        else:
+            self.rect.x = margin_left + (7 - pos_x) * cell_size + padding
+            self.rect.y = margin_top + pos_y * cell_size + padding
 
     def get_placing_cells(self):
         cells = set()
