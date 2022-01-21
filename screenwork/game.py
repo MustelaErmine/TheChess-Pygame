@@ -6,7 +6,9 @@ from pygame_const import *
 from piece import * 
 
 
-font = None
+font50 = None
+font_player = None
+font_howto = None
 all_sprite = None
 pieces_group = None
 
@@ -22,10 +24,13 @@ def terminate():
 
 
 def main_menu(screen, clock):
-    font = pygame.font.Font('OpenSans-Semibold.ttf', 50)
+    global font50, font_player, font_howto
+    font50 = pygame.font.Font('OpenSans-Semibold.ttf', 50)
+    font_player = pygame.font.Font('OpenSans-Semibold.ttf', 30)
+    font_howto = pygame.font.Font('OpenSans-Semibold.ttf', 20)
     pygame.draw.rect(screen, white, (0, 0, width, height))
 
-    text_rendered = font.render('Чтобы начать новую игру,', 1, black)
+    text_rendered = font50.render('Чтобы начать новую игру,', 1, black)
     text_rect = text_rendered.get_rect()
 
     text_rect.x = width // 2 - text_rect.width // 2
@@ -33,7 +38,7 @@ def main_menu(screen, clock):
 
     screen.blit(text_rendered, text_rect)
 
-    text_rendered = font.render('нажмите Enter', 1, black)
+    text_rendered = font50.render('нажмите Enter', 1, black)
     text_rect = text_rendered.get_rect()
 
     text_rect.x = width // 2 - text_rect.width // 2
@@ -79,18 +84,38 @@ def draw_selected(screen):
         #pygame.draw.rect(screen, blue, (x, y, cell_size, cell_size), padding)
 
 
+def draw_player_text(screen):
+    text_rendered = font_player.render('Ходят ' + ('белые' if player == WHITE else 'черные'), 
+                                       1, black)
+    text_rect = text_rendered.get_rect()
+
+    text_rect.x = player_text_center - text_rect.width // 2
+    text_rect.y = player_text_top
+
+    screen.blit(text_rendered, text_rect)
+
+
 def update(screen):
     pygame.draw.rect(screen, white, (0, 0, width, height))
     pieces_group.update(player)
     draw_cells(screen)
     draw_selected(screen)
+    draw_player_text(screen)
+    draw_howto_text(screen)
     all_sprite.draw(screen)
-    update_player_text(screen)
     pygame.display.flip()
 
 
-def update_player_text(screen):
-    pass
+def draw_howto_text(screen):
+    for i, line in enumerate(howto_text.split('\n')):
+        text_rendered = font_howto.render(line, 1, black)
+        text_rect = text_rendered.get_rect()
+
+        text_rect.x = howto_left
+        text_rect.y = howto_top + howto_padding * i
+
+        screen.blit(text_rendered, text_rect)
+
 
 
 def game(screen, clock):
