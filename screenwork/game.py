@@ -140,8 +140,6 @@ def game(screen, clock):
 
     update(screen)
 
-    print_board(board)
-
     running = True
     while running:
         for event in pygame.event.get():
@@ -150,7 +148,7 @@ def game(screen, clock):
             if event.type == pygame.MOUSEBUTTONDOWN:
                 cell = get_clicked_cell(*event.pos)
                 if cell:
-                    print(cell)
+                    #print(cell)
                     if selected:
                         make_move(*selected, *cell, pieces, board)
                         selected = None
@@ -161,7 +159,7 @@ def game(screen, clock):
                             selected = cell
                             selected_cells = piece
                             selected_cells = piece.get_placing_cells()
-                            print(selected_cells)
+                            #print(selected_cells)
                         else:
                             selected = None
                             selected_cells = set()
@@ -188,10 +186,10 @@ def get_clicked_cell(x, y):
 
 def make_move(row, col, row1, col1, pieces, board):
     global player
-    print('move', row, col, row1, col1)
+    #print('move', row, col, row1, col1)
     piece2 = pieces[row1][col1]
     move = board.move_piece(row, col, row1, col1)
-    print(move)
+    #print(move)
     if move:
         piece = pieces[row][col]
         pieces[row1][col1] = piece
@@ -200,4 +198,4 @@ def make_move(row, col, row1, col1, pieces, board):
         piece.update(col1, row1, player)
         if piece2 is not None:
             piece2.kill()
-        print_board(board)
+        #print_board(board)

@@ -145,3 +145,14 @@ class Board:
         self.field[row][4] = None
         self.color = opponent(self.color)
         return True
+
+    def attacked(self, row, col, color):
+        flag = False
+        for i in range(8):
+            for j in range(8):
+                if i == row and j == col:
+                    continue
+                if self.field[i][j] and self.field[i][j].get_color() == color and \
+                   self.field[i][j].can_attack(i, j, row, col):
+                    flag = True
+        return flag

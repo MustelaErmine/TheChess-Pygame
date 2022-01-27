@@ -13,10 +13,17 @@ class King:
         return 'K'
 
     def can_move(self, board, row, col, row1, col1):
+        if row == row1 and col == col1:
+            return False
+
         if row != row1 and col != col1:
             return False
 
-        return (abs(row - row1) == 1) or (abs(col - col1) == 1)
+        return (abs(row - row1) == 1) or (abs(col - col1) == 1) and \
+               not board.attacked(row1, col1, opponent(self.color))
 
     def can_attack(self, board, row, col, row1, col1):
         return self.can_move(board, row, col, row1, col1)
+
+    def checkmate(self, board, row, col):
+        return False
