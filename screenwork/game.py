@@ -221,12 +221,14 @@ def make_move(row, col, row1, col1, pieces, board, screen):
             won(screen, WHITE)
 
 def won(screen, color):
+    global selected_cells
     print('won', color)
+    selected_cells = []
     pygame.draw.rect(screen, white, (0, 0, width, height))
     pieces_group.update(player)
     draw_cells(screen)
     draw_selected(screen)
-    draw_player_text(screen, 'Выиграли ' + ('белые' if color == WHITE else 'черные')) + ', нажмите Enter'
+    draw_player_text(screen, 'Выиграли ' + ('белые' if color == WHITE else 'черные') + ', нажмите Enter')
     draw_howto_text(screen)
     all_sprite.draw(screen)
     pygame.display.flip()
@@ -240,4 +242,4 @@ def won(screen, color):
                 if event.key == 13:
                     running = False
         tclock.tick(fps)
-    main_menu()
+    main_menu(screen, tclock)
