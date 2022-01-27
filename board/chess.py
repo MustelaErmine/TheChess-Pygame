@@ -147,12 +147,14 @@ class Board:
         return True
 
     def attacked(self, row, col, color):
+        #print('attacked', row, col)
         flag = False
         for i in range(8):
             for j in range(8):
                 if i == row and j == col:
                     continue
                 if self.field[i][j] and self.field[i][j].get_color() == color and \
-                   self.field[i][j].can_attack(i, j, row, col):
+                   type(self.field[i][j]) is not King and \
+                   self.field[i][j].can_attack(self, i, j, row, col):
                     flag = True
         return flag

@@ -84,9 +84,8 @@ def draw_selected(screen):
         #pygame.draw.rect(screen, blue, (x, y, cell_size, cell_size), padding)
 
 
-def draw_player_text(screen):
-    text_rendered = font_player.render('Ходят ' + ('белые' if player == WHITE else 'черные'), 
-                                       1, black)
+def draw_player_text(screen, text):
+    text_rendered = font_player.render(text, 1, black)
     text_rect = text_rendered.get_rect()
 
     text_rect.x = player_text_center - text_rect.width // 2
@@ -100,7 +99,7 @@ def update(screen):
     pieces_group.update(player)
     draw_cells(screen)
     draw_selected(screen)
-    draw_player_text(screen)
+    draw_player_text(screen, 'Ходят ' + ('белые' if player == WHITE else 'черные'))
     draw_howto_text(screen)
     all_sprite.draw(screen)
     pygame.display.flip()
@@ -119,7 +118,9 @@ def draw_howto_text(screen):
 
 
 def game(screen, clock):
-    global all_sprite, pieces_group, player, selected_cells, selected
+    global all_sprite, pieces_group, player, selected_cells, selected, white_king, black_king, tclock
+
+    tclock = clock
 
     pieces_group = pygame.sprite.Group()
     all_sprite = pygame.sprite.Group()
@@ -128,6 +129,9 @@ def game(screen, clock):
 
     board = Board()
 
+    white_king = None
+    black_king = None
+
     pieces = []
     for i in range(8):
         pieces.append([])
@@ -135,8 +139,15 @@ def game(screen, clock):
             if board.get_piece(i, j) is not None:
                 pieces[-1].append(Piece(pieces_group, all_sprite, 
                                         board.get_piece(i, j), board, j, i))
+                if type(board.get_piece(i, j)) is King:
+                    if board.get_piece(i, j).get_color() == WHITE:
+                        white_king = (i, j)
+                    else:
+                        black_king = (i, j)
             else:
                 pieces[-1].append(None)
+
+    #print(white_king, black_king)
 
     update(screen)
 
@@ -150,7 +161,7 @@ def game(screen, clock):
                 if cell:
                     #print(cell)
                     if selected:
-                        make_move(*selected, *cell, pieces, board)
+                        make_move(*selected, *cell, pieces, board, screen)
                         selected = None
                         selected_cells = set()
                     else:
@@ -184,8 +195,8 @@ def get_clicked_cell(x, y):
         return False
 
 
-def make_move(row, col, row1, col1, pieces, board):
-    global player
+def make_move(row, col, row1, col1, pieces, board, screen):
+    global player, white_king, black_king
     #print('move', row, col, row1, col1)
     piece2 = pieces[row1][col1]
     move = board.move_piece(row, col, row1, col1)
@@ -198,4 +209,35 @@ def make_move(row, col, row1, col1, pieces, board):
         piece.update(col1, row1, player)
         if piece2 is not None:
             piece2.kill()
+        if (row, col) == white_king:
+            white_king = (row1, col1)
+        if (row, col) == black_king:
+            black_king = (row1, col1)
         #print_board(board)
+        #print(white_king, black_king)
+        if board.get_piece(*white_king).checkmate(board, *white_king):
+            won(screen, BLACK)
+        if board.get_piece(*black_king).checkmate(board, *black_king):
+            won(screen, WHITE)
+
+def won(screen, color):
+    print('won', color)
+    pygame.draw.rect(screen, white, (0, 0, width, height))
+    pieces_group.update(player)
+    draw_cells(screen)
+    draw_selected(screen)
+    draw_player_text(screen, 'Выиграли ' + ('белые' if color == WHITE else 'черные')) + ', нажмите Enter'
+    draw_howto_text(screen)
+    all_sprite.draw(screen)
+    pygame.display.flip()
+
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                terminate()
+            if event.type == pygame.KEYDOWN:
+                if event.key == 13:
+                    running = False
+        tclock.tick(fps)
+    main_menu()
